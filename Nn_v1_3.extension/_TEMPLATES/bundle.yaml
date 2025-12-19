@@ -1,0 +1,8 @@
+title: Nome do\nBotão          # Use \n para quebrar a linha
+tooltip: >
+  Descrição completa e detalhada do que o botão faz.
+  Pode ter várias linhas.
+  Útil para instruções de uso rápido.
+author: Nívea Lopes - NnBim
+version: 1.0
+# icon: icon.png               # O ícone deve estar na mesma pasta (32x32 ou 96x96)

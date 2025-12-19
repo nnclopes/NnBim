@@ -1,0 +1,37 @@
+# -*- coding: utf-8 -*-
+__title__   = "Nome do\nBotão"
+__doc__     = "Escreva aqui uma frase curta sobre o que este script faz."
+__author__  = "Nívea Lopes - NnBim"
+__version__ = "1.0.0"
+
+# --- Importações Padrão ---
+from pyrevit import forms, revit, script, DB
+
+# Variáveis Globais Úteis
+doc   = revit.doc
+uidoc = revit.uidoc
+
+# --- Início da Lógica ---
+
+# 1. Seleção ou Coleta de Dados
+# selection = revit.get_selection()
+# if not selection: forms.alert("Selecione algo!", exitscript=True)
+
+# 2. Abertura de Transação (Necessário para criar/modificar elementos)
+# O nome dentro das aspas é o que aparece no Ctrl+Z do Revit
+with revit.Transaction("Nome da Ação NnBim"):
+    
+    try:
+        # SEU CÓDIGO COMEÇA AQUI
+        print("Executando script...")
+        
+        # Exemplo:
+        # for el in selection:
+        #     el.LookupParameter("Comentários").Set("NnBim processou")
+        
+    except Exception as e:
+        print("Erro: {}".format(e))
+        # A transação é cancelada automaticamente se der erro dentro do 'with'
+
+# 3. Finalização
+# forms.alert("Concluído com sucesso!")

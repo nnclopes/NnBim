@@ -1,0 +1,8 @@
+{
+  "name": "NnBim Tools",
+  "description": "Ferramentas de produtividade e detalhamento NnBim.",
+  "author": "Nivea Lopes",
+  "url": "https://github.com/nnclopes/NnBim",
+  "dependencies": [],
+  "min_pyrevit_version": "4.8.8"
+}

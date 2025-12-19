@@ -1,0 +1,37 @@
+📂 NnBim.extension                   <-- A Pasta Mestra (Sua Extensão)
+ ├── 📄 extension.yaml               <-- (Opcional) Informações da extensão
+ ├── 📂 lib                          <-- O CÉREBRO (Bibliotecas Python)
+ │    └── 📂 nnbim_core              <-- Pasta para guardar códigos reutilizáveis
+ │         ├── 📜 __init__.py
+ │         ├── 📜 geometria.py       <-- Onde colocaremos a matemática do Erik futuro
+ │         └── 📜 interface.py       <-- Seus formulários padrão
+ │
+ └── 📂 NnBim.tab                    <-- A SUA ABA (Tab)
+      │
+      ├── 📂 01_Documentacao.panel   <-- PAINEL 1: Focado em Desenhos
+      │    ├── 📂 GeradorDetalhes.pushbutton  <-- O seu script atual
+      │    │    ├── 📜 script.py
+      │    │    ├── 🖼️ icon.png
+      │    │    └── 📄 bundle.yaml   <-- (Opcional) Descrição do botão
+      │    │
+      │    └── 📂 CotasAutomaticas.pushbutton <-- (Ideia futura)
+      │
+      ├── 📂 02_Modelagem.panel      <-- PAINEL 2: Ferramentas de 3D
+      │    ├── 📂 AlinharParedes.pushbutton
+      │    └── 📂 JoinGeometry.pushbutton
+      │
+      └── 📂 99_Utilidades.pulldown  <-- SOLUÇÃO P/ PILHAS GRANDES (Menu)
+           ├── 📜 bundle.yaml        <-- Define o nome do menu
+           ├── 🖼️ icon.png
+           ├── 📂 LimparVistas.pushbutton
+           ├── 📂 DeletarNaoUsados.pushbutton
+           ├── 📂 RenumerarPortas.pushbutton
+           └── 📂 Sobre.pushbutton
+
+
+📂 01_Documentacao.panel
+ ├── 📄 bundle.yaml            <-- (O do Painel: define o nome "Documentação")
+ └── 📂 GeradorDetalhes.pushbutton
+      ├── 📄 bundle.yaml       <-- (O do Botão: define título, autor e tooltip)
+      ├── 📜 script.py         <-- (O código Python que fizemos)
+      └── 🖼️ icon.png          <-- (Sua imagem 96x96 pixels)

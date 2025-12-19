@@ -1,0 +1,75 @@
+na nossa lista de pacotes, 
+
+
+gostaria que vc pudesse acrescentar revestimentos internos e externos parede comple aou meia parede, rodapes e rodapé especial, nos pisos soleiras, ou perfis metalicos
+nas esquadrias verga-contra verga- peitoril,
+
+
+Alvenarias (internas, externas, técnicas, curvas)
+
+Pisos (por material, por ambiente, com paginação, rampa)
+
+Forros (regulares, embutidos, com detalhes)
+
+Esquadrias (simples, especiais, técnicas, em pele de vidro)
+
+Equipamentos (bancadas, armadores, louças)
+
+Componentes (massas, model-in-place, rampas especiais)
+
+Detalhamentos (banheiros, fachadas, guarda-corpo, piscina etc.)
+
+Urbanização (grelhas, calçadas, meio-fio, canteiros)
+
+Documentação derivada (cortes, vistas, plantas-chave, etiquetas)
+
+Rodapés	Hospitalares, cerâmicos ou embutidos
+
+Corrimãos 	Sem transições complexas, retos
+
+layout 3D básico
+
+layout 2d
+
+Modelagem de ambientes
+
+Modelagem do terreno 
+ modelagem de vagas
+modelagem de canteiros, acessos
+ELEVADORES
+CAIXA DE ESCADAS 
+CAIXA MAQUINAS
+CAIXA D'AGUA
+
+Brises e elementos de fachada especiais
+Coberturas curvas / inclinadas
+Cortinas de vidro / fachada pele de vidro
+Portas técnicas especiais
+Forros com paginação especial
+Pisos com paginação específica
+Modelagem de rampas acessíveis com patamares
+Componentes no local (Model-In-Place)
+Famílias paramétricas personalizadas
+Volumes especiais com massa
+Muros com inclinação ou curvas
+Áreas molhadas detalhadas
+Revestimentos interno de parede
+
+Brises	Detalhados e classificados por ordem de locação
+Guarda-corpos	Modelagem com especificação de altura e materiais
+Áreas molhadas	Detalhamento específico por ambiente
+Escadas	Modeladas com detalhamento e cortes
+Elementos curvos	Modelados com orientação específica no BEP
+Marquises	Incluídas como equipamentos especiais ou elementos externos
+Soleiras e peitoris embutidos	Devem ser modelados como parte das esquadrias
+Itens de mobiliário fixo	Ex: bancadas, pias, tampos, escadas técnicas
+
+Elemento Avançado	Requisitos
+Modelagem de parede cortina	Inclui montantes e painéis
+Soleira embutida em esquadria	Procedimento de modelagem específica
+Revestimentos de parede detalhados	Orientações específicas para modelagem realista
+Detalhamento de brises	Planta, corte, chamada de detalhe, vista, prancha
+Detalhamento de guarda-corpos	Cotas, vistas com faixas de vista específicas
+Detalhamento de áreas molhadas	Plantas e cortes com louças e metais modelados
+
+
