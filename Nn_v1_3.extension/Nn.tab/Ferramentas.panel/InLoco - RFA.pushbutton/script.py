@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-__title__ = 'In-Loco\n-> RFA'
+__title__ = 'InPlace\npara\nRFA'
 __author__ = 'Nivea'
 __doc__ = """Transforma geometrias In-Loco isoladas em Famílias Carregáveis (.rfa).
 

@@ -1,4 +1,16 @@
 # -*- coding: utf-8 -*-
+__title__ = 'Mover Nível\nMantendo\nPosição Original'
+__author__ = 'Nivea'
+__doc__ = """Transforma geometrias In-Loco isoladas em Famílias Carregáveis (.rfa).
+
+PASSO A PASSO:
+1. Exploda a modelagem original para individualizar as peças.
+2. Selecione as peças soltas na tela.
+3. Clique neste botão.
+4. Siga as instruções na tela para mapear sua família.
+
+Nota de Segurança: As peças originais não são apagadas, apenas ocultadas na vista atual."""
+
 from pyrevit import revit, forms
 from Autodesk.Revit import DB as db
 
