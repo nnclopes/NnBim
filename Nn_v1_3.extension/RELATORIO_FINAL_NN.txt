@@ -1,0 +1,75 @@
+DIAGNÓSTICO DE RAIZ NnBim - v4.0
+============================================================
+RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
+============================================================
+
+[VITAL] extension.json: ENCONTRADO NA RAIZ (CORRETO)
+
+|--- Nn.tab/
+    |--- Detalhamento.panel/
+        |--- Pranchas.stack/
+            |--- Dados da Prancha.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Gerar Vistas.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Montar Pranchas.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+    |--- Ferramentas.panel/
+        |--- Dados.stack/
+            |--- Excel Link.pushbutton/
+                |    [F] ExcelLink.xaml
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Exportar Parametros.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Importar Parametros.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+        |--- In place-RFA.pulldown/
+            |--- Explodir InPlace.pushbutton/
+                |    [OK] script.py
+            |--- InLoco - RFA.pushbutton/
+                |    [OK] script.py
+            |--- Substituir por RFA.pushbutton/
+                |    [OK] script.py
+            |--- Transformar em RFA.pushbutton/
+                |    [OK] script.py
+            |    [F] icon.png
+        |--- Modelagem.stack/
+            |--- Ambientes.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Dividir.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- Modelo Slim.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+        |--- Níveis.stack/
+            |--- IsolarNivel.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+            |--- MoverMantendoPosicao.pushbutton/
+                |    [F] icon.png
+                |    [OK] script.py
+    |--- Sistema.panel/
+        |--- Reload.pushbutton/
+            |    [F] icon.png
+            |    [OK] script.py
+|--- _TEMPLATES/
+|--- lib/
+    |--- GUI/
+        |    [F] FindReplace.xaml
+        |--- Resources/
+            |    [F] WPF_styles.xaml
+        |    [F] SelectFromDict.xaml
+        |--- Tools/
+            |    [F] CreateFromRooms.xaml
+    |--- Renaming/
+        |    [F] GUI_BaseRename.xaml
+    |--- Selection/
+    |--- Snippets/

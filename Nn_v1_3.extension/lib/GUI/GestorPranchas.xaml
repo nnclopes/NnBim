@@ -1,0 +1,109 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NnBim: Gestor de Pranchas" Height="550" Width="450" 
+        WindowStartupLocation="CenterScreen" Topmost="True" Background="#F0F0F0">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#212121" Padding="10" MouseLeftButtonDown="header_drag">
+            <DockPanel LastChildFill="False">
+                <TextBlock Text="NnBim Dev: Sincronizador de Carimbo" Foreground="White" FontWeight="Bold" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                <Button Content="X" Click="button_close" Width="20" Background="Transparent" Foreground="White" BorderThickness="0" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+            </DockPanel>
+        </Border>
+
+        <TabControl Grid.Row="1" Margin="5">
+            <TabItem Header="1. Selecionar Pranchas">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Selecione as pranchas para atualizar:" Margin="0,0,0,5" FontWeight="Bold" Foreground="#333333"/>
+                    
+                    <ListBox x:Name="lbPranchas" Grid.Row="1" SelectionMode="Multiple" 
+                             Background="White" Foreground="Black" BorderBrush="#A0A0A0" BorderThickness="1"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="2. Dados em Lote">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="15">
+                        <TextBlock Text="Deixe em branco os campos que NÃO deseja alterar." Foreground="#555555" FontSize="11" Margin="0,0,0,10" TextWrapping="Wrap"/>
+                        
+                        <TextBlock Text="Responsabilidades:" FontWeight="Bold" Margin="0,10,0,5" Foreground="#0056b3"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Desenhado por:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtDesenhado" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="Verificado por:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtVerificado" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                <TextBlock Text="Projetado por:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtProjetado" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Datas e Revisão:" FontWeight="Bold" Margin="0,15,0,5" Foreground="#0056b3"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Data Emissão:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtDataEmissao" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,5,0">
+                                <TextBlock Text="Revisão:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtRevisao" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                <TextBlock Text="Data Revisão:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtDataRevisao" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Classificação:" FontWeight="Bold" Margin="0,15,0,5" Foreground="#0056b3"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                <TextBlock Text="Disciplina:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtDisciplina" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                <TextBlock Text="Fase do Projeto:" FontSize="11" Foreground="#333333"/>
+                                <TextBox x:Name="txtFase" Height="25" Background="White" Foreground="Black" Padding="3" VerticalContentAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Content="EXECUTAR ATUALIZAÇÃO GERAL" 
+                                Click="executar_atualizacao" 
+                                Height="45" 
+                                Margin="0,25,0,0"
+                                Background="#4CAF50" 
+                                Foreground="White" 
+                                FontWeight="Bold"
+                                BorderThickness="0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

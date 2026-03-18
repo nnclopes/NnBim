@@ -72,3 +72,30 @@ def get_line_styles(uidoc):
         t.RollBack()
     line_styles = [doc.GetElement(line_style) for line_style in line_styles_ids]
     return line_styles
+
+
+# -*- coding: utf-8 -*-
+from Autodesk.Revit.DB import *
+
+def dividir_curva_em_partes(curva, num_partes):
+    """
+    Logica extraida da Revit API e foruns tecnicos.
+    Divide qualquer curva (reta, arco, spline) em partes iguais 
+    retornando uma lista de novas geometrias de curva.
+    """
+    if num_partes < 2:
+        return [curva]
+        
+    novas_curvas = []
+    step = 1.0 / num_partes
+    
+    for i in range(num_partes):
+        start_param = i * step
+        end_param = (i + 1) * step
+        
+        # Clone e MakeBound e o metodo mais estavel para manter curvatura
+        segmento = curva.Clone()
+        segmento.MakeBound(start_param, end_param)
+        novas_curvas.append(segmento)
+        
+    return novas_curvas

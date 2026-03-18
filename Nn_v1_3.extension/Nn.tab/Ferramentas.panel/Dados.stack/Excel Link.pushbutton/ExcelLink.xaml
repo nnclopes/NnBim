@@ -1,0 +1,68 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NnBim - Excel Link Pro" Height="500" Width="600" 
+        WindowStartupLocation="CenterScreen" Background="#F5F5F5"
+        FontFamily="Segoe UI">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2B3C5A" Padding="15">
+            <TextBlock Text="EXCEL LINK PRO" Foreground="White" FontSize="18" FontWeight="Bold"/>
+        </Border>
+
+        <TabControl x:Name="tab_main" Grid.Row="1" Margin="10">
+            
+            <TabItem Header="Tabelas (Schedules)">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Selecione as tabelas para exportar:" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <ListBox x:Name="list_schedules" Grid.Row="1" SelectionMode="Multiple" BorderBrush="#CCCCCC"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Nova Extração (Categorias)">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="Selecione a Categoria:" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="cb_categories" Grid.Row="1" Height="30" Margin="0,0,0,15" SelectionChanged="on_category_changed"/>
+                    
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <ListBox x:Name="list_available_params" Grid.Column="0" BorderBrush="#CCCCCC"/>
+                        
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Button x:Name="btn_add" Content=">>" Width="35" Height="30" Margin="0,5" Click="on_add_param"/>
+                            <Button x:Name="btn_remove" Content="&lt;&lt;" Width="35" Height="30" Margin="0,5" Click="on_remove_param"/>
+                        </StackPanel>
+                        
+                        <ListBox x:Name="list_selected_params" Grid.Column="2" BorderBrush="#CCCCCC"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="2" Background="#E0E0E0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0">
+                <Button Content="IMPORTAR EXCEL" Width="140" Height="35" Margin="0,0,10,0" Background="#4CAF50" Foreground="White" FontWeight="Bold" Click="on_import_click"/>
+                <Button Content="EXPORTAR DADOS" Width="140" Height="35" Background="#2196F3" Foreground="White" FontWeight="Bold" Click="on_export_click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
