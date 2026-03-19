@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class ExcelWriter:
     def __init__(self):
         self.wb = self.create_excel_workbook()

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from Autodesk.Revit.DB import *
 from Autodesk.Revit.UI import UIDocument
 default_uidoc = __revit__.ActiveUIDocument

@@ -7,16 +7,15 @@ RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
 
 |--- Nn.tab/
     |--- Detalhamento.panel/
-        |--- Pranchas.stack/
-            |--- Dados da Prancha.pushbutton/
-                |    [F] icon.png
-                |    [OK] script.py
-            |--- Gerar Vistas.pushbutton/
-                |    [F] icon.png
-                |    [OK] script.py
-            |--- Montar Pranchas.pushbutton/
-                |    [F] icon.png
-                |    [OK] script.py
+        |--- Dados da Prancha.pushbutton/
+            |    [F] icon.png
+            |    [OK] script.py
+        |--- Gerar Vistas.pushbutton/
+            |    [F] icon.png
+            |    [OK] script.py
+        |--- Montar Pranchas.pushbutton/
+            |    [F] icon.png
+            |    [OK] script.py
     |--- Ferramentas.panel/
         |--- Dados.stack/
             |--- Excel Link.pushbutton/
@@ -57,6 +56,8 @@ RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
                 |    [F] icon.png
                 |    [OK] script.py
     |--- Sistema.panel/
+        |--- Raio-X.pushbutton/
+            |    [OK] script.py
         |--- Reload.pushbutton/
             |    [F] icon.png
             |    [OK] script.py
@@ -64,6 +65,7 @@ RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
 |--- lib/
     |--- GUI/
         |    [F] FindReplace.xaml
+        |    [F] GestorPranchas.xaml
         |--- Resources/
             |    [F] WPF_styles.xaml
         |    [F] SelectFromDict.xaml
