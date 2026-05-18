@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 NnBim Dev - Ferramenta de Simplificacao de Modelos
 NOME: Modelo Slim
@@ -150,3 +150,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

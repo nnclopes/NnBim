@@ -5,14 +5,16 @@ RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
 
 [VITAL] extension.json: ENCONTRADO NA RAIZ (CORRETO)
 
-|    [F] GestorPranchas.xaml
 |--- Nn.tab/
-    |--- Catalogo Familias.pulldown/
-        |--- Exportar-RFA.pushbutton/
+    |--- Detalhamento.panel/
+        |--- Dados da Prancha.pushbutton/
+            |    [F] icon.png
             |    [OK] script.py
-        |--- Familia de Sistema.pulldown/
+        |--- Gerar Vistas.pushbutton/
+            |    [F] icon.png
             |    [OK] script.py
-        |--- Importar-RFA.pushbutton/
+        |--- Montar Pranchas.pushbutton/
+            |    [F] icon.png
             |    [OK] script.py
     |--- Ferramentas.panel/
         |--- Dados.stack/
@@ -53,39 +55,23 @@ RAIZ: C:\Users\Nn_1tb\OneDrive\Documentos\GitHub\NnBim\Nn_v1_3.extension
             |--- MoverMantendoPosicao.pushbutton/
                 |    [F] icon.png
                 |    [OK] script.py
-    |--- Pranchas.panel/
-        |--- Dados da Prancha.pushbutton/
-            |    [F] icon.png
-            |    [OK] script.py
-        |--- Gerar Vistas.pushbutton/
-            |    [F] icon.png
-            |    [OK] script.py
-        |--- Montar Pranchas.pushbutton/
-            |    [F] icon.png
-            |    [OK] script.py
-        |--- Titulos Vista.pushbutton/
-            |    [F] GerirTitulos.xaml
-            |    [F] icon.png
-            |    [OK] script.py
     |--- Sistema.panel/
         |--- Raio-X.pushbutton/
-            |    [F] icon.png
             |    [OK] script.py
         |--- Reload.pushbutton/
             |    [F] icon.png
             |    [OK] script.py
 |--- _TEMPLATES/
 |--- lib/
-    |--- lib/
-        |--- GUI/
-            |    [F] FindReplace.xaml
-            |    [F] GestorPranchas.xaml
-            |--- Resources/
-                |    [F] WPF_styles.xaml
-            |    [F] SelectFromDict.xaml
-            |--- Tools/
-                |    [F] CreateFromRooms.xaml
-        |--- Renaming/
-            |    [F] GUI_BaseRename.xaml
-        |--- Selection/
-        |--- Snippets/
+    |--- GUI/
+        |    [F] FindReplace.xaml
+        |    [F] GestorPranchas.xaml
+        |--- Resources/
+            |    [F] WPF_styles.xaml
+        |    [F] SelectFromDict.xaml
+        |--- Tools/
+            |    [F] CreateFromRooms.xaml
+    |--- Renaming/
+        |    [F] GUI_BaseRename.xaml
+    |--- Selection/
+    |--- Snippets/

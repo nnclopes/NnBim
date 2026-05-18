@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms, script
 import System.Collections.Generic
@@ -43,3 +43,4 @@ if solidos:
         doc.Delete(in_place_el.Id)
         t.Commit()
     forms.toast("Sucesso!")
+

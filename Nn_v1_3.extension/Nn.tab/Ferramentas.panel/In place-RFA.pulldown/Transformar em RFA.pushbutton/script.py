@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 '''
 NnBim: In-Place para RFA (Pro)
 DESCRICAO:
@@ -161,3 +161,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

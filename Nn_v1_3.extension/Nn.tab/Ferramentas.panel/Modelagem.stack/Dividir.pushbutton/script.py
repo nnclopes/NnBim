@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 '''
 NnBim: Dividir Curva (Universal)
 DESCRICAO:
@@ -88,3 +88,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

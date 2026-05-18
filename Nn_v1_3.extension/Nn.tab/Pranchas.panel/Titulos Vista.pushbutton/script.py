@@ -1,132 +1,152 @@
 # -*- coding: utf-8 -*-
 """
-NnBim: AUDITORIA DE TÍTULOS DE VISTA
-DESCRICAO:
-Lê as pranchas selecionadas, encontra vistas que não possuem
-um 'Título na Folha' preenchido e exibe uma tabela interativa
-para que o usuário decida se quer adicionar um título ou não.
+NnBim: GESTOR DE TITULOS E ORDEM DE DESENHO
+------------------------------------------------------------
+Sincroniza nomes de vistas e a ordem dos detalhes
+com as gavetas do carimbo (DESENHO 01-17).
+VERSAO: 8.0 (Busca na Lib da Extensao)
 """
-
-__title__ = 'Título das\nVistas'
+__title__ = 'Titulo das\nVistas'
 __author__ = 'NnBim Dev'
 
 import os
-import sys
 from pyrevit import forms, revit, script
 from Autodesk.Revit.DB import *
-import wpf
 
 doc = revit.doc
 
-# --- 1. CLASSE DE DADOS PARA A TABELA (DataGrid) ---
-# Esta classe faz a ponte entre o Python e o visual WPF
-class VistaData(object):
-    def __init__(self, view_id, prancha, nome_vista):
-        self.ViewId = view_id
-        self.Prancha = prancha
-        self.NomeVista = nome_vista
-        self.TituloFolha = ""
+# --- LOCALIZACAO DINAMICA NA PASTA LIB ---
+try:
+    lib_path  = script.get_bundle_lib_path()
+    xaml_path = os.path.join(lib_path, "GerirTitulos.xaml")
+except Exception:
+    xaml_path = os.path.join(os.path.dirname(__file__), "GerirTitulos.xaml")
 
-# --- 2. CLASSE DA JANELA ---
+
+# --- CLASSE DE DADOS PARA A TABELA ---
+class VistaData(object):
+    def __init__(self, view_id, vp_id, sheet_id, prancha_num, num_detalhe, nome_vista, titulo_atual):
+        self.ViewId        = view_id
+        self.ViewportId    = vp_id
+        self.SheetId       = sheet_id
+        self.Prancha       = prancha_num
+        self.NumeroDetalhe = num_detalhe
+        self.NomeVista     = nome_vista
+        self.TituloFolha   = titulo_atual if titulo_atual else ""
+
+
+# --- MOTOR DE ATUALIZACAO DO CARIMBO ---
+def atualizar_carimbo_desenhos(sheet):
+    viewports    = [doc.GetElement(vpid) for vpid in sheet.GetAllViewports()]
+    dados_vistas = []
+
+    for vp in viewports:
+        view = doc.GetElement(vp.ViewId)
+        if view.ViewType in [ViewType.Legend, ViewType.Schedule]:
+            continue
+
+        num       = vp.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).AsString()
+        tit_param = view.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION).AsString()
+        nome_final = tit_param if (tit_param and tit_param.strip()) else view.Name
+
+        dados_vistas.append({
+            'ordem': int(num) if (num and num.isdigit()) else 99,
+            'texto': nome_final.upper()
+        })
+
+    dados_vistas.sort(key=lambda x: x['ordem'])
+
+    for i in range(1, 18):
+        param = sheet.LookupParameter("DESENHO {:02d}".format(i))
+        if param and not param.IsReadOnly:
+            param.Set(dados_vistas[i-1]['texto'] if i <= len(dados_vistas) else "")
+
+
+# --- INTERFACE WPF ---
 class JanelaTitulos(forms.WPFWindow):
-    def __init__(self, xaml_path, lista_dados):
-        # Carrega o XAML da mesma pasta do script
-        forms.WPFWindow.__init__(self, xaml_path)
-        self.lista_dados = lista_dados
-        
-        # Injeta os dados na tabela
-        self.dgVistas.ItemsSource = self.lista_dados
+    def __init__(self, xaml_file, lista_dados):
+        if not os.path.exists(xaml_file):
+            forms.alert("ERRO: O arquivo 'GerirTitulos.xaml' nao foi encontrado na pasta LIB!")
+            script.exit()
+
+        forms.WPFWindow.__init__(self, xaml_file)
+        self.dgVistas.ItemsSource = lista_dados
 
     def salvar_titulos(self, sender, e):
-        # Quando clicar em Salvar, fecha a tela e roda a atualização
         self.Close()
-        
-        vistas_atualizadas = 0
-        
-        with revit.Transaction("NnBim: Atualização de Títulos na Folha"):
-            with forms.ProgressBar(title='Aplicando Títulos... ({value} de {max_value})') as pb:
-                for index, item in enumerate(self.lista_dados):
-                    # Se o usuário digitou algo na coluna
-                    if item.TituloFolha and item.TituloFolha.strip() != "":
-                        view = doc.GetElement(item.ViewId)
-                        param_titulo = view.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION)
-                        
-                        if param_titulo and not param_titulo.IsReadOnly:
-                            param_titulo.Set(item.TituloFolha.upper()) # Já salva em Maiúsculas
-                            vistas_atualizadas += 1
-                            
-                    pb.update_progress(index + 1, len(self.lista_dados))
+        lista          = self.dgVistas.ItemsSource
+        sheets_afetadas = list(set([item.SheetId for item in lista]))
 
-        if vistas_atualizadas > 0:
-            forms.toast("Sucesso! {} títulos foram atualizados.".format(vistas_atualizadas))
-        else:
-            forms.toast("Nenhum título foi alterado.")
+        with revit.Transaction("NnBim: Sincronizar Vistas"):
+            # 1. Nomes e titulos (com prefixo temp para evitar conflitos de nome)
+            for item in lista:
+                view = doc.GetElement(item.ViewId)
+                vp   = doc.GetElement(item.ViewportId)
 
-# --- 3. EXECUÇÃO PRINCIPAL ---
+                try:
+                    if view.Name != item.NomeVista:
+                        view.Name = item.NomeVista
+                except:
+                    pass
+
+                val_tit = item.TituloFolha.strip() if item.TituloFolha else ""
+                view.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION).Set(val_tit.upper())
+
+                if item.NumeroDetalhe:
+                    vp.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).Set(
+                        "temp_" + str(item.NumeroDetalhe)
+                    )
+
+            # 2. Numero de detalhe definitivo
+            for item in lista:
+                if item.NumeroDetalhe:
+                    vp = doc.GetElement(item.ViewportId)
+                    vp.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).Set(
+                        str(item.NumeroDetalhe)
+                    )
+
+        # 3. Atualizacao dos carimbos
+        with revit.Transaction("NnBim: Atualizar Dados Carimbo"):
+            for s_id in sheets_afetadas:
+                atualizar_carimbo_desenhos(doc.GetElement(s_id))
+
+        forms.toast("Nomes, Titulos e Carimbos Atualizados!")
+
+
+# --- INICIALIZACAO ---
 def main():
-    # A. Coleta todas as pranchas do projeto para o usuário escolher
-    sheets = FilteredElementCollector(doc).OfClass(ViewSheet).ToElements()
-    
-    if not sheets:
-        forms.alert("Nenhuma prancha encontrada neste projeto.")
-        script.exit()
-
+    sheets     = FilteredElementCollector(doc).OfClass(ViewSheet).ToElements()
     sheet_dict = {s.SheetNumber + " - " + s.Name: s for s in sheets}
-    
-    pranchas_selecionadas = forms.SelectFromList.show(
+
+    sel = forms.SelectFromList.show(
         sorted(sheet_dict.keys()),
-        title="NnBim: Selecione as Pranchas para Auditar",
         multiselect=True,
-        button_name="Analisar Vistas >"
+        title="Gestao de Titulos: Selecione as Pranchas",
+        button_name="Analisar Vistas"
     )
-    
-    if not pranchas_selecionadas:
+    if not sel:
         script.exit()
 
-    # B. Motor de Raio-X nas vistas das pranchas selecionadas
-    vistas_sem_titulo = []
-    
-    with forms.ProgressBar(title='Analisando Vistas...', cancellable=True) as pb:
-        for i, p_nome in enumerate(pranchas_selecionadas):
-            if pb.cancelled:
-                break
-                
-            sheet = sheet_dict[p_nome]
-            vp_ids = sheet.GetAllViewports()
-            
-            for vp_id in vp_ids:
-                vp = doc.GetElement(vp_id)
-                view = doc.GetElement(vp.ViewId)
-                
-                # Ignorar legendas e tabelas
-                if view.ViewType in [ViewType.Legend, ViewType.Schedule]:
-                    continue
-                
-                # Verifica a gaveta "Título na Folha"
-                param_titulo = view.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION)
-                if param_titulo:
-                    titulo_na_folha = param_titulo.AsString()
-                    
-                    # Se estiver vazio ou for nulo, é um candidato para a nossa auditoria!
-                    if not titulo_na_folha or titulo_na_folha.strip() == "":
-                        dado = VistaData(view.Id, sheet.SheetNumber, view.Name)
-                        vistas_sem_titulo.append(dado)
-                    
-            pb.update_progress(i + 1, len(pranchas_selecionadas))
+    vistas_dados = []
+    for p_nome in sel:
+        sheet = sheet_dict[p_nome]
+        for vpid in sheet.GetAllViewports():
+            vp = doc.GetElement(vpid)
+            v  = doc.GetElement(vp.ViewId)
+            if v.ViewType in [ViewType.Legend, ViewType.Schedule]:
+                continue
 
-    # C. Abre a Janela se encontrou problemas
-    if not vistas_sem_titulo:
-        forms.alert("Parabéns! Todas as vistas nas pranchas selecionadas já possuem um 'Título na Folha' preenchido (ou não há vistas).", title="NnBim: Auditoria Perfeita")
+            num = vp.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).AsString()
+            tit = v.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION).AsString()
+            vistas_dados.append(
+                VistaData(v.Id, vp.Id, sheet.Id, sheet.SheetNumber, num, v.Name, tit)
+            )
+
+    if vistas_dados:
+        JanelaTitulos(xaml_path, vistas_dados).ShowDialog()
     else:
-        xaml_file = os.path.join(os.path.dirname(__file__), "GerirTitulos.xaml")
-        
-        # Verificação extra para garantir que o XAML está na mesma pasta
-        if not os.path.exists(xaml_file):
-            forms.alert("Arquivo 'GerirTitulos.xaml' não encontrado na pasta do botão.\nPor favor, salve-o na mesma pasta do script.py.", title="Erro de XAML")
-            script.exit()
-            
-        janela = JanelaTitulos(xaml_file, vistas_sem_titulo)
-        janela.ShowDialog()
+        forms.alert("Nenhuma viewport encontrada nas pranchas selecionadas.")
+
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 __title__ = 'Recarregar\npyRevit'
 __author__ = 'NnBim Dev'
 
@@ -13,3 +13,4 @@ def recarregar_sessao():
 
 if __name__ == '__main__':
     recarregar_sessao()
+

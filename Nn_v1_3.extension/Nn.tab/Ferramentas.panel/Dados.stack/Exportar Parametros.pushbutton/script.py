@@ -1,108 +1,138 @@
 # -*- coding: utf-8 -*-
 """
-NnBim: Exportar Parâmetros Compartilhados (Diagnóstico)
+NnBim: Exportar Parametros Compartilhados
 DESCRICAO:
-Varre a família (incluindo legendas), exporta para o TXT e reporta o erro exato do Revit caso a gravação falhe.
+Varre os parametros compartilhados da familia aberta e os exporta
+para o arquivo .txt mapeado, reportando erros exatos da API.
+
+COMO USAR:
+1. Abra uma familia (.rfa) no Editor de Familias.
+2. Tenha um arquivo de Parametros Compartilhados (.txt) mapeado
+   em Gerenciar > Parametros Compartilhados.
+3. Execute o script e selecione os parametros a exportar.
+4. Informe o nome do grupo de destino no arquivo .txt.
 """
-__title__ = 'Exportar\nParâmetros'
+__title__ = 'Exportar\nParametros'
 __author__ = 'Nn_Dev'
 
-import clr
 from pyrevit import revit, DB, forms, script
 
 doc = revit.doc
 app = doc.Application
 
-def main():
-    if not doc.IsFamilyDocument:
-        forms.alert("Execute dentro de um Editor de Famílias (.rfa).", exitscript=True)
 
+def main():
+    # 1. VALIDACAO: deve estar num Editor de Familias
+    if not doc.IsFamilyDocument:
+        forms.alert(
+            "Execute dentro de um Editor de Familias (.rfa).",
+            exitscript=True
+        )
+
+    # 2. VALIDACAO: arquivo de parametros compartilhados mapeado
     sp_file = app.OpenSharedParameterFile()
     if not sp_file:
-        forms.alert("Nenhum arquivo de Parâmetros Compartilhados (.txt) mapeado.", exitscript=True)
+        forms.alert(
+            "Nenhum arquivo de Parametros Compartilhados (.txt) mapeado.\n"
+            "Va em Gerenciar > Parametros Compartilhados e carregue um arquivo primeiro.",
+            exitscript=True
+        )
 
+    # 3. COLETAR PARAMETROS COMPARTILHADOS DA FAMILIA
     sp_elements = DB.FilteredElementCollector(doc).OfClass(DB.SharedParameterElement).ToElements()
 
     if not sp_elements:
-        forms.alert("Nenhum parâmetro compartilhado encontrado.", exitscript=True)
+        forms.alert("Nenhum parametro compartilhado encontrado nesta familia.", exitscript=True)
 
     param_dict = {}
     for sp_elem in sp_elements:
         try:
-            sp_def = sp_elem.GetDefinition()
+            sp_def  = sp_elem.GetDefinition()
             param_dict[sp_def.Name] = {
-                "Def": sp_def,
+                "Def":  sp_def,
                 "GUID": sp_elem.GuidValue
             }
-        except:
+        except Exception:
             pass
 
-    selected_param_names = forms.SelectFromList.show(
-        sorted(param_dict.keys()),
-        title="Selecione os Parâmetros para Exportar",
-        multiselect=True
-    )
+    if not param_dict:
+        forms.alert("Nao foi possivel ler os parametros desta familia.", exitscript=True)
 
-    if not selected_param_names:
+    # 4. SELECAO PELO USUARIO
+    selected_names = forms.SelectFromList.show(
+        sorted(param_dict.keys()),
+        title="NnBim: Selecione os Parametros para Exportar",
+        multiselect=True,
+        button_name="Exportar >"
+    )
+    if not selected_names:
         script.exit()
 
+    # 5. NOME DO GRUPO NO ARQUIVO .TXT
     group_name = forms.ask_for_string(
-        default="NnBim_Legendas",
-        prompt="Digite o nome do Grupo para salvar no arquivo .txt:"
+        default="NnBim_Exportados",
+        prompt="Nome do Grupo de destino no arquivo .txt:",
+        title="NnBim: Grupo de Destino"
     )
-
     if not group_name:
         script.exit()
 
+    # 6. CRIAR GRUPO SE NAO EXISTIR
     group = sp_file.Groups.get_Item(group_name)
     if not group:
         try:
             group = sp_file.Groups.Create(group_name)
         except Exception as e:
-            forms.alert("Erro ao criar o grupo. O arquivo pode ser Somente Leitura.\nErro: {}".format(e), exitscript=True)
+            forms.alert(
+                "Erro ao criar o grupo '{}'. O arquivo pode ser somente leitura.\n\nErro: {}".format(group_name, e),
+                exitscript=True
+            )
 
-    sucesso = 0
-    ignorados = 0
-    erros_reais = [] # Lista para capturar o motivo da falha
-    
-    for name in selected_param_names:
-        data = param_dict[name]
+    # 7. EXPORTAR
+    sucesso    = 0
+    ignorados  = 0
+    erros_list = []
+
+    for name in selected_names:
+        data   = param_dict[name]
         sp_def = data["Def"]
-        guid = data["GUID"]
-        
+        guid   = data["GUID"]
+
         try:
+            # Compatibilidade Revit 2022+ (GetDataType) e versoes anteriores (ParameterType)
             if hasattr(sp_def, "GetDataType"):
                 opt = DB.ExternalDefinitionCreationOptions(sp_def.Name, sp_def.GetDataType())
             else:
                 opt = DB.ExternalDefinitionCreationOptions(sp_def.Name, sp_def.ParameterType)
-            
-            opt.GUID = guid
-            opt.UserModifiable = True # Forçando True para evitar bloqueios de sistema
-            
+
+            opt.GUID           = guid
+            opt.UserModifiable = True
+
             group.Definitions.Create(opt)
             sucesso += 1
-            
+
         except Exception as e:
             ignorados += 1
             erro_str = str(e)
-            if erro_str not in erros_reais:
-                erros_reais.append(erro_str)
+            if erro_str not in erros_list:
+                erros_list.append(erro_str)
 
-    # Relatório com o Diagnóstico
-    msg_final = (
-        "Exportação Concluída!\n\n"
-        "📁 Arquivo: {}\n"
-        "📂 Grupo: {}\n\n"
-        "✅ {} Parâmetros exportados.\n"
-        "⚠️ {} Parâmetros falharam/ignorados.\n".format(sp_file.Filename, group_name, sucesso, ignorados)
-    )
+    # 8. RELATORIO FINAL
+    msg = (
+        "Exportacao concluida!\n\n"
+        "Arquivo : {}\n"
+        "Grupo   : {}\n\n"
+        "{} parametro(s) exportado(s).\n"
+        "{} parametro(s) ignorado(s) / com falha.\n"
+    ).format(sp_file.Filename, group_name, sucesso, ignorados)
 
-    if erros_reais:
-        msg_final += "\n🛑 MOTIVO DA FALHA (Revit API):\n"
-        for erro in erros_reais:
-            msg_final += "- {}\n".format(erro)
+    if erros_list:
+        msg += "\nMOTIVO(S) DA FALHA:\n"
+        for erro in erros_list:
+            msg += "- {}\n".format(erro)
 
-    forms.alert(msg_final, title="NnBim Dev - Relatório de Diagnóstico")
+    forms.alert(msg, title="NnBim: Relatorio de Exportacao")
+
 
 if __name__ == '__main__':
     main()

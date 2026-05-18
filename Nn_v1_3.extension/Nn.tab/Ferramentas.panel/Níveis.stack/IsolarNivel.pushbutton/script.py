@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from pyrevit import revit, forms
 from Autodesk.Revit import DB as db
 from System.Collections.Generic import List
@@ -6,13 +6,13 @@ from System.Collections.Generic import List
 doc = revit.doc
 view = doc.ActiveView
 
-# 1. Pegar todos os níveis do projeto para o usuário escolher
+# 1. Pegar todos os nÃ­veis do projeto para o usuÃ¡rio escolher
 levels = db.FilteredElementCollector(doc).OfClass(db.Level).ToElements()
 level_dict = {l.Name: l for l in levels}
 
 selected_level_name = forms.SelectFromList.show(
     sorted(level_dict.keys()), 
-    title="Selecione o nível para isolar elementos",
+    title="Selecione o nÃ­vel para isolar elementos",
     multiselect=False
 )
 
@@ -24,16 +24,16 @@ if selected_level_name:
     
     ids_to_select = []
     
-    # Lista de todos os parâmetros internos que o Revit usa para níveis
+    # Lista de todos os parÃ¢metros internos que o Revit usa para nÃ­veis
     level_params = [
-        db.BuiltInParameter.FAMILY_LEVEL_PARAM,             # Componentes, Mobiliário
+        db.BuiltInParameter.FAMILY_LEVEL_PARAM,             # Componentes, MobiliÃ¡rio
         db.BuiltInParameter.LEVEL_PARAM,                    # Pisos, Telhados
         db.BuiltInParameter.WALL_BASE_CONSTRAINT,           # Paredes
         db.BuiltInParameter.ROOM_LEVEL_ID,                  # Ambientes
-        db.BuiltInParameter.SCHEDULE_LEVEL_PARAM,           # Vários elementos
+        db.BuiltInParameter.SCHEDULE_LEVEL_PARAM,           # VÃ¡rios elementos
         db.BuiltInParameter.INSTANCE_REFERENCE_LEVEL_PARAM, # Colunas, Vigas
-        db.BuiltInParameter.ROOF_BASE_LEVEL_PARAM,          # Telhados específicos
-        db.BuiltInParameter.IMPORT_BASE_LEVEL               # Vínculos e CADs
+        db.BuiltInParameter.ROOF_BASE_LEVEL_PARAM,          # Telhados especÃ­ficos
+        db.BuiltInParameter.IMPORT_BASE_LEVEL               # VÃ­nculos e CADs
     ]
 
     for el in all_elements:
@@ -47,14 +47,14 @@ if selected_level_name:
         if found:
             ids_to_select.append(el.Id)
 
-    # 3. Executar Seleção e Isolamento
+    # 3. Executar SeleÃ§Ã£o e Isolamento
     if ids_to_select:
         collection = List[db.ElementId](ids_to_select)
         
         # Seleciona os objetos
         revit.get_selection().set_to(collection)
         
-        # Inicia a transação para o isolamento temporário
+        # Inicia a transaÃ§Ã£o para o isolamento temporÃ¡rio
         t = db.Transaction(doc, "Nn: Isolar Tudo no Nivel")
         try:
             t.Start()
@@ -66,4 +66,5 @@ if selected_level_name:
                 t.RollBack()
             forms.alert("Erro ao isolar: {}".format(str(e)))
     else:
-        forms.alert("Nenhum elemento encontrado vinculado ao nível {} nesta vista.".format(selected_level_name))
+        forms.alert("Nenhum elemento encontrado vinculado ao nÃ­vel {} nesta vista.".format(selected_level_name))
+

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms, script
 import System
@@ -56,3 +56,4 @@ with revit.TransactionGroup("NnBim: Converter para RFA"):
             if not symb.IsActive: symb.Activate()
             doc.Create.NewFamilyInstance(ponto_insercao, symb, Structure.StructuralType.NonStructural)
             t_proj.Commit()
+

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 Nome: Montar Prancha
 Descricao: Diagramacao Automatica V5.11 (Revit 2025 Verified)
@@ -311,3 +311,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
