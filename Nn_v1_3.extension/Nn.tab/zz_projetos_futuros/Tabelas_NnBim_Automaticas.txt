@@ -1,0 +1,213 @@
+============================================================
+PROJETO FUTURO: GERACAO/ATUALIZACAO AUTOMATICA DE TABELAS (ViewSchedule)
+============================================================
+Status: EM DESENHO (nao iniciado)
+Data da discussao: 2026-06-14
+
+
+------------------------------------------------------------
+1. OBJETIVO
+------------------------------------------------------------
+Hoje varios botoes da NnBim gravam parametros compartilhados
+(Nn_*, LUM_*) nos elementos/Rooms, mas a criacao das tabelas
+(Schedules) no Revit para visualizar/conferir esses dados ainda
+e manual. A ideia e que cada botao, ao final do seu fluxo,
+ofereca criar/atualizar a tabela correspondente automaticamente.
+
+
+------------------------------------------------------------
+2. DECISOES DE ARQUITETURA (confirmadas)
+------------------------------------------------------------
+
+a) Centralizado vs. descentralizado
+   -> DESCENTRALIZADO. Cada ferramenta (Ambientes, Luminotecnico,
+      Pranchas) ganha sua propria chamada de "Gerar/Atualizar
+      Tabela" no final do proprio fluxo. Sem painel/botao novo
+      dedicado a isso.
+
+b) Onde entra no fluxo
+   -> Como parte do fluxo existente. Ao final da execucao do
+      botao, perguntar via forms.alert(..., yes=True, no=True):
+      "Criar/atualizar tabela 'NnBim - X'?"
+
+c) Idempotencia
+   -> Procurar ViewSchedule existente por NOME. Se existir, NAO
+      recriar do zero: apenas adicionar os campos que ainda nao
+      estao no ScheduleDefinition (comparando por ParameterId).
+      Se nao existir, criar via ViewSchedule.CreateSchedule().
+
+d) Pre-requisito de parametros
+   -> Reaproveitar garantir_parametros_compartilhados() (de
+      lib/Snippets/_shared_parameters.py) antes de montar a
+      tabela, garantindo que os parametros Nn_*/LUM_* estejam
+      criados e vinculados a categoria certa.
+
+e) Layout dos campos
+   -> Campos FIXOS pre-definidos no codigo (lista por tabela,
+      ver secao 4). Alem disso, um botao/janela "Adicionar mais
+      parametros" permite ao usuario incluir campos extras na
+      tabela depois de criada.
+
+
+------------------------------------------------------------
+3. MODULO COMPARTILHADO NOVO
+------------------------------------------------------------
+Arquivo: lib/Snippets/_schedules.py
+
+Funcao principal:
+
+    def criar_ou_atualizar_tabela(doc, nome_tabela, categoria,
+                                   campos_fixos, multi_categoria=False):
+        """
+        :param categoria: BuiltInCategory (ignorado se multi_categoria=True)
+        :param campos_fixos: lista de itens, cada um:
+               - BuiltInParameter  -> campo nativo do Revit
+               - str               -> nome de parametro compartilhado/projeto
+                                       (ex.: "Nn_Largura", "LUM_FU")
+        :return: (schedule, adicionados, nao_encontrados)
+        """
+
+Logica:
+  1. Procura ViewSchedule existente com Name == nome_tabela via
+     FilteredElementCollector(doc).OfClass(ViewSchedule).
+  2. Se nao existir:
+       cat_id = ElementId.InvalidElementId se multi_categoria
+                else ElementId(categoria)
+       schedule = ViewSchedule.CreateSchedule(doc, cat_id)
+       schedule.Name = nome_tabela
+  3. definition = schedule.Definition
+     schedulable = definition.GetSchedulableFields()
+     Monta dicionario de busca:
+       - se sf.ParameterId.IntegerValue < 0 (nativo):
+             chave = BuiltInParameter(sf.ParameterId.IntegerValue)
+             (evita depender do idioma do Revit)
+       - senao (parametro compartilhado/projeto):
+             chave = sf.GetName(doc)  (ex.: "Nn_Largura")
+  4. Para cada item em campos_fixos:
+       - se chave existe no dict E ParameterId ainda nao esta
+         em algum definition.GetField(i) -> definition.AddField(sf)
+       - senao -> entra em nao_encontrados (parametro ainda nao
+         vinculado, ou campo nao existe para essa categoria)
+  5. Roda dentro do ef_Transaction do script chamador.
+     Quem chama decide se exibe aviso sobre nao_encontrados.
+
+
+------------------------------------------------------------
+4. TABELAS PLANEJADAS (4 no total)
+------------------------------------------------------------
+
+--------------------------------------------------------------
+TABELA 1: "NnBim - Ambientes"
+--------------------------------------------------------------
+Categoria: OST_Rooms (single category)
+Integrado em: Ambientes.panel/Ajustar_altura_ambientenes.pushbutton
+Campos:
+  - BuiltInParameter.ROOM_NUMBER
+  - BuiltInParameter.ROOM_NAME
+  - BuiltInParameter.ROOM_LEVEL_ID
+  - BuiltInParameter.ROOM_AREA
+  - "Nn_Largura"
+  - "Nn_Comprimento"
+  - "Nn_Altura do Forro"
+Status: PILOT escolhido (primeiro a implementar)
+
+
+--------------------------------------------------------------
+TABELA 2: "NnBim - Luminotecnico"
+--------------------------------------------------------------
+Categoria: OST_Rooms (single category)
+Integrado em: Luminotecnico.panel/Importar Luminotecnico.pushbutton
+  (DECIDIDO: nao entra no "Exportar Ambientes_PAVIMENTOS", pois
+   nesse momento os LUM_* ainda estao vazios. O Import ja chama
+   criar_parametros_lum() internamente, garantindo o binding
+   antes de montar a tabela - autossuficiente.)
+  Ponto exato: dentro de _importar(), depois de
+  "atualizados, nao_encontrados, params_faltando = aplicar_valores(linhas)",
+  perguntar via forms.alert(..., yes=True, no=True) e chamar
+  criar_ou_atualizar_tabela(doc, "NnBim - Luminotecnico",
+                             BuiltInCategory.OST_Rooms, CAMPOS_TABELA_LUM)
+Campos:
+  - BuiltInParameter.ROOM_NUMBER
+  - BuiltInParameter.ROOM_NAME
+  - BuiltInParameter.ROOM_AREA
+  - "LUM_Atividade_NBR"
+  - "LUM_Altura_Luminaria"
+  - "LUM_Iluminancia_Em"
+  - "LUM_Indice_K"
+  - "LUM_Tipo_Luminaria"
+  - "LUM_Fluxo_Luminoso"
+  - "LUM_FU"
+  - "LUM_FM"
+  - "LUM_Quant_Luminaria_Calculado"
+  - "LUM_Quant_Luminaria_Adotado"
+  - "LUM_Potencia_Unitaria"
+  - "LUM_Carga_Total"
+
+OBS A AVALIAR DEPOIS (nao bloqueia o pilot):
+  criar_parametros_lum() (em Importar Luminotecnico e em
+  Exportar Ambientes_PAVIMENTOS) usa ForgeTypeId direto, duplicando
+  logica que ja existe em garantir_parametros_compartilhados()
+  (_shared_parameters.py). Possivel unificacao futura.
+
+
+--------------------------------------------------------------
+TABELA 3: "NnBim - Conferencia de Ambientes"
+--------------------------------------------------------------
+Categoria: MULTI-CATEGORIA (todas categorias de Modelo, mesmo
+           conjunto usado em Gravar ambiente nos elementos)
+Integrado em: Ambientes.panel/Gravar ambiente nos elementos.pushbutton
+Campos:
+  - BuiltInParameter.ELEM_CATEGORY_PARAM            (Categoria)
+  - campo "Familia e Tipo" - ENUM EXATO A CONFIRMAR
+    via GetSchedulableFields() na hora da implementacao (varia
+    conforme categoria; candidatos: ELEM_FAMILY_AND_TYPE_PARAM /
+    combinacao de ELEM_FAMILY_PARAM + SYMBOL_NAME_PARAM)
+  - "Nn_Ambiente"
+  - "Nn_Ambiente_Numero"
+Observacao: campos que nao existem para alguma categoria entram
+  em nao_encontrados e sao ignorados (funcao tolerante) - ex.:
+  "Nivel" nao existe de forma uniforme em multi-categoria.
+
+
+--------------------------------------------------------------
+TABELA 4: "NnBim - Pranchas"
+--------------------------------------------------------------
+Categoria: OST_Sheets (schedule tipo "Lista de Folhas")
+Integrado em: Pranchas.panel/Dados da Prancha.pushbutton
+Campos:
+  - BuiltInParameter.SHEET_NUMBER
+  - BuiltInParameter.SHEET_NAME
+  - BuiltInParameter.SHEET_DRAWN_BY
+  - BuiltInParameter.SHEET_CHECKED_BY
+  - BuiltInParameter.SHEET_CURRENT_REVISION
+  - BuiltInParameter.SHEET_CURRENT_REVISION_DATE
+  - "DESENHO 01" ... "DESENHO 17"  (17 campos, parametros de
+    projeto usados pelo Titulos Vista.pushbutton)
+PENDENTE: identificar qual parametro/BuiltInParameter guarda
+  "Disciplina" no script Dados da Prancha.pushbutton (existe
+  txtDisciplina na UI, mas o mapeamento para parametro nao foi
+  confirmado ainda).
+
+
+------------------------------------------------------------
+5. "ADICIONAR MAIS PARAMETROS" (componente reutilizavel)
+------------------------------------------------------------
+Arquivo proposto: lib/GUI/Tools/SchedulePicker.xaml + .py
+Funcao: janela simples que lista os parametros disponiveis para
+a categoria da tabela (GetSchedulableFields), marcando os que
+ja estao incluidos, permitindo ao usuario selecionar extras e
+adiciona-los ao ScheduleDefinition via definition.AddField().
+Reutilizavel pelas 4 tabelas (chamado a partir do dialogo de
+confirmacao "criar/atualizar tabela?").
+
+
+------------------------------------------------------------
+6. ORDEM DE IMPLEMENTACAO SUGERIDA
+------------------------------------------------------------
+1. lib/Snippets/_schedules.py (criar_ou_atualizar_tabela)
+2. PILOT: Tabela 1 (Ambientes) em Ajustar_altura_ambientenes
+3. Tabela 2 (Luminotecnico) em Importar Luminotecnico
+4. Tabela 3 (Conferencia de Ambientes) em Gravar ambiente nos elementos
+5. Tabela 4 (Pranchas) em Dados da Prancha
+   - resolver pendencia do campo "Disciplina" antes
+6. SchedulePicker.xaml/.py ("adicionar mais parametros")

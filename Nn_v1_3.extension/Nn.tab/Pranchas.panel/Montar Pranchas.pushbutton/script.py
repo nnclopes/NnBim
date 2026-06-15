@@ -1,4 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
+
+__title__ = 'Montar\nPranchas'
+__author__ = 'NnBim Dev'
+
 """
 Nome: Montar Prancha
 Descricao: Diagramacao Automatica V5.11 (Revit 2025 Verified)

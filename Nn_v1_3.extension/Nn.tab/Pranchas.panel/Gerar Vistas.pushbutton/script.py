@@ -11,7 +11,7 @@ COMO USAR:
 3. Confirme a remocao de vinculos se necessario.
 """
 __title__ = 'Modelo\nSlim'
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 import clr
 clr.AddReference('RevitAPI')

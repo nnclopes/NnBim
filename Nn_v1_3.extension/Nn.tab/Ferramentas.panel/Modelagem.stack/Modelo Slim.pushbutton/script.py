@@ -7,7 +7,7 @@ AUTOR: Nn_Dev (Engenharia de Software NnBim)
 """
 
 __title__ = 'Modelo\nSlim'
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 import clr
 clr.AddReference('RevitAPI')

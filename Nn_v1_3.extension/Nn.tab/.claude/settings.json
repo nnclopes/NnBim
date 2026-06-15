@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/c/Program Files/pyRevit-Master/bin/pyrevit\" clones add master \"C:\\\\Program Files\\\\pyRevit-Master\")",
+      "Bash(ls -la \"/c/Program Files/pyRevit-Master/\" 2>&1)",
+      "Read(//c/Program Files/pyRevit-Master//**)",
+      "Bash(\"/c/Program Files/pyRevit-Master/bin/pyrevit\" clones add master \"C:\\\\Program Files\\\\pyRevit-Master\" --debug)",
+      "Bash(git config *)",
+      "Bash(cd \"c:/Users/Nn_1tb/OneDrive/Documentos/GitHub/NnBim/Nn_v1_3.extension\" && find . -maxdepth 2 -type d)",
+      "Read(//c/Users/Nn_1tb/OneDrive/Documentos/GitHub/NnBim/Nn_v1_3.extension/**)",
+      "Bash(python -c ' *)",
+      "Bash(xxd script.py)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Nn_1tb\\OneDrive\\Documentos\\GitHub\\NnBim\\Nn_v1_3.extension\\lib\\GUI\\Tools",
+      "c:\\Users\\Nn_1tb\\OneDrive\\Documentos\\GitHub\\NnBim\\Nn_v1_3.extension\\lib\\Snippets"
+    ]
+  }
+}

@@ -15,7 +15,7 @@ PASSO A PASSO:
 Nota: As pecas originais nao sao apagadas, apenas ocultadas na vista atual.
 """
 __title__ = 'InPlace\npara\nRFA'
-__author__ = 'Nivea'
+__author__ = 'NnBim Dev'
 
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms, script

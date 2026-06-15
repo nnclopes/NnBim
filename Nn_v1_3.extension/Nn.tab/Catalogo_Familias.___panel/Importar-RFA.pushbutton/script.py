@@ -11,7 +11,7 @@ COMO USAR:
 3. Selecione as familias desejadas na lista.
 """
 __title__ = 'Catalogar Familia\nImportar-RFA'
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 import clr
 import os

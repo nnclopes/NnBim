@@ -12,7 +12,7 @@ COMO USAR:
 3. Escolha a familia carregavel de destino.
 """
 __title__ = 'InLoco\nRFA'
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms, script

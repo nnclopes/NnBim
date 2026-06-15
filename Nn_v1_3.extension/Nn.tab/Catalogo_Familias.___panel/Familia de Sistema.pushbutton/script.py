@@ -6,7 +6,7 @@ Gera amostras fisicas de tipos de Parede organizadas em grade.
 """
 
 __title__ = 'Catalogar Família\n de Sistema' # O acento aqui pode, pois esta dentro da string
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 import clr
 from Autodesk.Revit.DB import *

@@ -12,7 +12,7 @@ COMO USAR:
 4. Na janela, escolha o Tipo de Forro e digite a Altura (ex: 2.70).
 5. Clique em 'Gerar Forros'.
 """
-__title__ = "Ambientes para Forro"
+__title__ = "Modelar forro\nautomaticamente"
 __author__ = "NnBim Dev"
 
 from Autodesk.Revit.DB import *

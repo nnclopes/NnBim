@@ -1,4 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
+
+__title__ = 'Isolar\nNível'
+__author__ = 'NnBim Dev'
+
 from pyrevit import revit, forms
 from Autodesk.Revit import DB as db
 from System.Collections.Generic import List

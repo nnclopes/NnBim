@@ -5,8 +5,8 @@ DESCRICAO:
 Extrai familias carregaveis e organiza em pastas por categoria.
 """
 
-__title__ = 'Catalogar FamÃ­lia\nExportar-RFA' # O acento aqui pode, pois esta dentro da string
-__author__ = 'Nn_Dev'
+__title__ = 'Catalogar Família\nExportar-RFA' # O acento aqui pode, pois esta dentro da string
+__author__ = 'NnBim Dev'
 
 import os
 import clr

@@ -13,7 +13,7 @@ COMO USAR:
 4. Informe o nome do grupo de destino no arquivo .txt.
 """
 __title__ = 'Exportar\nParametros'
-__author__ = 'Nn_Dev'
+__author__ = 'NnBim Dev'
 
 from pyrevit import revit, DB, forms, script
 

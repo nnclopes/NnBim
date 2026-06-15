@@ -1,4 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
+
+__title__ = 'Explodir\nInPlace'
+__author__ = 'NnBim Dev'
+
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms, script
 import System.Collections.Generic
