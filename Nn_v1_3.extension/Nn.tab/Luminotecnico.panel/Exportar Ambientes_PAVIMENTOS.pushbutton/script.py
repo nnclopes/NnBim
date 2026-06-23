@@ -20,6 +20,7 @@ Instrucoes de Uso:
 
 import clr
 import os
+import shutil
 
 clr.AddReference("RevitAPI")
 clr.AddReference("RevitAPIUI")
@@ -295,7 +296,11 @@ def aplicar_operacoes_abas(wb, pending_ops):
 
 def exportar_para_excel_multi(path_xlsx, jobs, path_saida):
     """jobs: lista de (nome_aba, rooms_sel, pending_ops). Tudo gravado no
-    mesmo arquivo de saida, cada job em sua propria aba."""
+    mesmo arquivo de saida, cada job em sua propria aba.
+
+    O arquivo de calculo (path_xlsx) e somente lido: uma copia dele e
+    criada em path_saida e toda a edicao ocorre sobre essa copia, para
+    que o arquivo base nunca seja sobrescrito."""
     clr.AddReference("Microsoft.Office.Interop.Excel")
     import Microsoft.Office.Interop.Excel as xl
     import System.Runtime.InteropServices as interop
@@ -309,6 +314,11 @@ def exportar_para_excel_multi(path_xlsx, jobs, path_saida):
     COL_ALT      = 9
     xlUp         = -4162
 
+    if os.path.normcase(os.path.abspath(path_saida)) == os.path.normcase(os.path.abspath(path_xlsx)):
+        raise Exception(u"O arquivo de saida nao pode ser o mesmo arquivo de calculo (base).")
+
+    shutil.copy2(path_xlsx, path_saida)
+
     excel = None
     wb    = None
     total_rooms = 0
@@ -316,7 +326,7 @@ def exportar_para_excel_multi(path_xlsx, jobs, path_saida):
         excel = xl.ApplicationClass()
         excel.Visible       = False
         excel.DisplayAlerts = False
-        wb = excel.Workbooks.Open(path_xlsx)
+        wb = excel.Workbooks.Open(path_saida)
 
         for nome_aba, rooms_sel, pending_ops in jobs:
             if pending_ops:
@@ -349,7 +359,7 @@ def exportar_para_excel_multi(path_xlsx, jobs, path_saida):
 
             total_rooms += len(rooms_sel)
 
-        wb.SaveAs(path_saida)
+        wb.Save()
         return total_rooms
 
     finally:
